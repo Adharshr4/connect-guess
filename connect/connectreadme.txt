@@ -1,0 +1,1 @@
+put the images (a board,red coin,green coin) in drawable components and then use the given code

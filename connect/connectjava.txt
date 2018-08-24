@@ -1,0 +1,92 @@
+package com.example.adharsh.connectclone;
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.GridLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity {
+
+    int activeuser=0;
+    int[] gamestate={2,2,2,2,2,2,2,2,2};
+    int[][] winningpos={{0,1,2},{3,4,5},{6,7,8},{0,3,6},{1,4,7},{2,5,8},{0,4,8},{2,4,6}};
+    boolean gameisactive=true;
+
+    public  void click(View view){
+
+        ImageView img=(ImageView)view;
+        int tappedcount=Integer.parseInt(img.getTag().toString());
+        if(gamestate[tappedcount]==2&&gameisactive) {
+
+            gamestate[tappedcount]=activeuser;
+            img.setTranslationY(-1000f);           //only id u need to show id it coming from top otherwise without this also it will work
+            if (activeuser == 0) {
+                img.setImageResource(R.drawable.green);
+                activeuser = 1;
+            } else {
+                img.setImageResource(R.drawable.red);
+                activeuser = 0;
+            }
+
+            img.animate().translationYBy(1000f).setDuration(30);
+            for(int[] wp:winningpos){
+
+                if(gamestate[wp[0]]==gamestate[wp[1]]&&
+                        gamestate[wp[1]]==gamestate[wp[2]]&&
+                                gamestate[wp[0]]!=2){
+                    gameisactive=false;
+                    String mesg="red won!";
+                    if(gamestate[wp[0]]==0) {
+
+                        mesg = "green won!";
+                    }
+                        TextView tv=(TextView)findViewById(R.id.textview);
+                        tv.setText(mesg);
+                    LinearLayout lay=(LinearLayout)findViewById(R.id.layout1);
+                    lay.setVisibility(View.VISIBLE);
+
+                    }else{
+
+                    boolean gameisover=true;
+                    for(int i:gamestate){
+                        if(i==2){
+                            gameisover=false;
+                        }
+                    }
+                    if(gameisover){
+                        TextView tv=(TextView)findViewById(R.id.textview);
+                        tv.setText("match is draw");
+                        LinearLayout lay=(LinearLayout) findViewById(R.id.layout1);
+                        lay.setVisibility(View.VISIBLE);
+                    }
+
+                }
+
+                }
+            }
+
+        }
+        public void clickplayagain(View view){
+            gameisactive=true;
+            activeuser=0;
+            for(int i=0;i<gamestate.length;i++)
+                gamestate[i]=2;
+            LinearLayout lay=(LinearLayout)findViewById(R.id.layout1);
+            lay.setVisibility(View.INVISIBLE);
+            GridLayout glay=(GridLayout)findViewById(R.id.layout2);
+            for(int i=0;i<glay.getChildCount();i++) {
+                ((ImageView) glay.getChildAt(i)).setImageResource(0);
+            }
+        }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+}
